@@ -1,17 +1,18 @@
 #include <lib/lib.hpp>
 
-#include <boost/test/unit_test.hpp>
+#include <boost/ut.hpp>
+
+using namespace boost::ut;
+
+using xzr::lib::add;
 
 namespace
 {
-using xzr::lib::add;
-
-BOOST_AUTO_TEST_SUITE(lib_tests)
-
-BOOST_AUTO_TEST_CASE(lib_add)
-{
-    BOOST_TEST(add(1, 3) == 4);
+suite suite_add = [] {
+    "add"_test = [] {
+        expect(2_i == add(1, 1));
+        expect(3_i == add(1, 2));
+        expect(3_i == add(2, 1));
+    };
+};
 }
-
-BOOST_AUTO_TEST_SUITE_END()
-} // namespace

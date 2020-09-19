@@ -46,7 +46,7 @@ target_link_libraries(
   lib_test
   PRIVATE
     lib::lib
-    Boost::unit_test_framework
+    boost::ut
 )
 
 add_test(
@@ -54,5 +54,4 @@ add_test(
     lib::test
   COMMAND
     lib_test
-    "--color_output=false"
 )

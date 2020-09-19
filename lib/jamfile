@@ -31,9 +31,9 @@ lib lib
     ;
 
 run $(test_sources)
-    : --color_output=false
+    :
     :
     : <library>lib
-      <library>/boost//unit_test_framework
+      <library>/external//ut
     : test
     ;
