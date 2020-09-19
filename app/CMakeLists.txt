@@ -11,14 +11,15 @@ target_sources(
 target_link_libraries(
   app_exe
   PRIVATE
-    lib::lib
-    Boost::program_options
+  Boost::program_options
+  ftxui::component
+  lib::lib
 )
 
 add_test(
   NAME
-    app::exe
+  app::exe
   COMMAND
-    app_exe
-    "--help"
+  app_exe
+  "--help"
 )

@@ -5,3 +5,71 @@ alias ut
     : <include>./ut/include
     ;
 
+lib ftxui_screen
+  : ftxui/src/ftxui/screen/box.cpp
+    ftxui/src/ftxui/screen/color.cpp
+    ftxui/src/ftxui/screen/color_info.cpp
+    ftxui/src/ftxui/screen/screen.cpp
+    ftxui/src/ftxui/screen/string.cpp
+    ftxui/src/ftxui/screen/terminal.cpp
+    ftxui/src/ftxui/screen/wcwidth.cpp
+  : <include>ftxui/include
+    <include>ftxui/src
+  :
+  : <include>ftxui/include
+;
+
+lib ftxui_dom
+  : ftxui/src/ftxui/dom/blink.cpp
+    ftxui/src/ftxui/dom/bold.cpp
+    ftxui/src/ftxui/dom/border.cpp
+    ftxui/src/ftxui/dom/clear_under.cpp
+    ftxui/src/ftxui/dom/color.cpp
+    ftxui/src/ftxui/dom/composite_decorator.cpp
+    ftxui/src/ftxui/dom/dbox.cpp
+    ftxui/src/ftxui/dom/dim.cpp
+    ftxui/src/ftxui/dom/flex.cpp
+    ftxui/src/ftxui/dom/frame.cpp
+    ftxui/src/ftxui/dom/gauge.cpp
+    ftxui/src/ftxui/dom/graph.cpp
+    ftxui/src/ftxui/dom/hbox.cpp
+    ftxui/src/ftxui/dom/hflow.cpp
+    ftxui/src/ftxui/dom/inverted.cpp
+    ftxui/src/ftxui/dom/node.cpp
+    ftxui/src/ftxui/dom/node_decorator.cpp
+    ftxui/src/ftxui/dom/paragraph.cpp
+    ftxui/src/ftxui/dom/separator.cpp
+    ftxui/src/ftxui/dom/size.cpp
+    ftxui/src/ftxui/dom/spinner.cpp
+    ftxui/src/ftxui/dom/text.cpp
+    ftxui/src/ftxui/dom/underlined.cpp
+    ftxui/src/ftxui/dom/util.cpp
+    ftxui/src/ftxui/dom/vbox.cpp
+  : <include>ftxui/include
+    <include>ftxui/src
+    <library>ftxui_screen
+  :
+  : <include>ftxui/include
+    <library>ftxui_screen
+;
+
+lib ftxui_component
+  : ftxui/src/ftxui/component/button.cpp
+    ftxui/src/ftxui/component/checkbox.cpp
+    ftxui/src/ftxui/component/component.cpp
+    ftxui/src/ftxui/component/container.cpp
+    ftxui/src/ftxui/component/event.cpp
+    ftxui/src/ftxui/component/input.cpp
+    ftxui/src/ftxui/component/menu.cpp
+    ftxui/src/ftxui/component/radiobox.cpp
+    ftxui/src/ftxui/component/radiobox.cpp
+    ftxui/src/ftxui/component/screen_interactive.cpp
+    ftxui/src/ftxui/component/toggle.cpp
+  : <include>ftxui/include
+    <include>ftxui/src
+    <library>ftxui_dom
+  :
+  : <include>ftxui/include
+    <library>ftxui_dom
+    <library>/site-config//pthread
+  ;

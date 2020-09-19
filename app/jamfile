@@ -6,6 +6,7 @@ exe exe
     : $(sources)
       /lib//lib
       /boost//program_options
+      /external//ftxui_component
     ;
 
 import testing
@@ -14,7 +15,4 @@ import testing
 unit-test run
     : exe
     : <testing.arg>"--help"
-    ;
-
-always run
     ;

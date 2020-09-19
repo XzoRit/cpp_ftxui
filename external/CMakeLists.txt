@@ -5,3 +5,7 @@ add_subdirectory(
 add_subdirectory(
   ut
 )
+
+add_subdirectory(
+  ftxui
+)
