@@ -13,7 +13,6 @@ target_link_libraries(
   PRIVATE
   Boost::program_options
   ftxui::component
-  lib::lib
 )
 
 add_test(

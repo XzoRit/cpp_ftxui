@@ -1,7 +1,12 @@
-#include <lib/lib.hpp>
-
+#include <ftxui/component/container.hpp>
+#include <ftxui/component/input.hpp>
 #include <ftxui/component/menu.hpp>
+#include <ftxui/component/radiobox.hpp>
 #include <ftxui/component/screen_interactive.hpp>
+#include <ftxui/component/toggle.hpp>
+#include <ftxui/dom/elements.hpp>
+#include <ftxui/screen/screen.hpp>
+#include <ftxui/screen/string.hpp>
 
 #include <boost/program_options.hpp>
 
@@ -10,6 +15,71 @@
 using namespace ftxui;
 
 namespace po = boost::program_options;
+
+class Text : public Component
+{
+  private:
+    Element Render() override
+    {
+        return window(text(L"Title"), text(L"content"));
+    }
+};
+
+class PwdInput : public Component
+{
+  public:
+    PwdInput()
+    {
+        Add(&container);
+        container.Add(&in);
+
+        in.placeholder = L"input password";
+    }
+
+  private:
+    Element Render() override
+    {
+        const auto a{in.content};
+        in.content.assign(a.size(), '*');
+        return vbox({hbox({text(L" password: "), in.Render()})}) | border;
+    }
+
+    Container container{Container::Horizontal()};
+    Input in;
+};
+
+class Tab : public Component
+{
+    Toggle tab_selection{};
+
+    Text text_component{};
+    PwdInput pwd_in{};
+
+    Container main_container{Container::Vertical()};
+    Container container{Container::Tab(&tab_selection.selected)};
+
+  public:
+    Tab()
+    {
+        Add(&main_container);
+
+        tab_selection.entries = {L"protected", L"change"};
+        main_container.Add(&tab_selection);
+
+        container.Add(&pwd_in);
+        container.Add(&text_component);
+        main_container.Add(&container);
+    }
+
+    Element Render() override
+    {
+        return vbox({
+            text(L"Application") | bold | hcenter,
+            tab_selection.Render() | hcenter,
+            container.Render() | flex,
+        });
+    }
+};
 
 int main(int ac, char* av[])
 {
@@ -39,16 +109,12 @@ int main(int ac, char* av[])
         std::cerr << "Exception of unknown type!\n";
     }
 
-    auto screen = ScreenInteractive::TerminalOutput();
+    {
+        auto screen = ScreenInteractive::Fullscreen();
 
-    Menu menu;
-    menu.entries = {L"entry 1", L"entry 2", L"entry 3"};
-    menu.selected = 0;
-    menu.on_enter = screen.ExitLoopClosure();
+        Tab tab{};
+        screen.Loop(&tab);
+    }
 
-    screen.Loop(&menu);
-
-    std::cout << "Selected element = " << menu.selected << std::endl;
-
-    return xzr::lib::add(0, 0);
+    return 0;
 }
