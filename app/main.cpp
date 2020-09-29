@@ -34,13 +34,15 @@ class PwdInput : public Component
         container.Add(&in);
 
         in.placeholder = L"input password";
+        in.on_change = [this] {
+            const auto a{in.content};
+            in.content.assign(a.size(), '*');
+        };
     }
 
   private:
     Element Render() override
     {
-        const auto a{in.content};
-        in.content.assign(a.size(), '*');
         return vbox({hbox({text(L" password: "), in.Render()})}) | border;
     }
 
