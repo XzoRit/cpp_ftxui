@@ -30,8 +30,7 @@ class PwdInput : public Component
   public:
     PwdInput()
     {
-        Add(&container);
-        container.Add(&in);
+        Add(&in);
 
         in.placeholder = L"input password";
         in.on_change = [this] {
@@ -46,7 +45,6 @@ class PwdInput : public Component
         return vbox({hbox({text(L" password: "), in.Render()})}) | border;
     }
 
-    Container container{Container::Horizontal()};
     Input in;
 };
 
