@@ -85,8 +85,6 @@ class Tab : public Component
 
 int main(int ac, char* av[])
 {
-    std::cout << "Hello app\n";
-
     try
     {
         po::options_description desc("Allowed options");
