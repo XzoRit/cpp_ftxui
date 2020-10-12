@@ -1,2 +1,2 @@
-[[https://travis-ci.org/XzoRit/cpp_starter][https://travis-ci.org/XzoRit/cpp_ftxui.svg?branch=master]]
+[[https://travis-ci.org/XzoRit/cpp_ftxui][https://travis-ci.org/XzoRit/cpp_ftxui.svg?branch=main]]
 * playground for ftxui lib
