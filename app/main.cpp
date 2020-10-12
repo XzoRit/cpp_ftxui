@@ -11,19 +11,11 @@
 #include <boost/program_options.hpp>
 
 #include <iostream>
+#include <utility>
 
 using namespace ftxui;
 
 namespace po = boost::program_options;
-
-class Text : public Component
-{
-  private:
-    Element Render() override
-    {
-        return window(text(L"Title"), text(L"content"));
-    }
-};
 
 class PwdInput : public Component
 {
@@ -33,31 +25,66 @@ class PwdInput : public Component
         Add(&in);
 
         in.placeholder = L"input password";
-        in.on_change = [this] {
-            const auto a{in.content};
-            in.content.assign(a.size(), '*');
-        };
+        in.on_change = [this] { raw = std::exchange(in.content, std::wstring(in.content.size(), L'*')); };
+    }
+
+    std::wstring raw;
+
+    Element Render() override
+    {
+        return vbox({hbox({text(L" password: "), in.Render()})});
+    }
+
+  private:
+    Input in;
+};
+
+class ChangePwdDlg : public Component
+{
+  public:
+    ChangePwdDlg()
+    {
+        Add(&container);
+
+        container.Add(&old_pwd);
+        container.Add(&new_pwd);
+        container.Add(&confirm_pwd);
     }
 
   private:
     Element Render() override
     {
-        return vbox({hbox({text(L" password: "), in.Render()})}) | border;
+        return border(vbox(old_pwd.Render(), new_pwd.Render(), confirm_pwd.Render()));
     }
 
-    Input in;
+    Container container{Container::Vertical()};
+    PwdInput old_pwd;
+    PwdInput new_pwd;
+    PwdInput confirm_pwd;
+};
+
+class ProtectedDlg : public Component
+{
+  public:
+    ProtectedDlg()
+    {
+        Add(&container);
+
+        container.Add(&pwd);
+    }
+
+  private:
+    Element Render() override
+    {
+        return border(pwd.Render());
+    }
+
+    Container container{Container::Vertical()};
+    PwdInput pwd;
 };
 
 class Tab : public Component
 {
-    Toggle tab_selection{};
-
-    Text text_component{};
-    PwdInput pwd_in{};
-
-    Container main_container{Container::Vertical()};
-    Container container{Container::Tab(&tab_selection.selected)};
-
   public:
     Tab()
     {
@@ -66,7 +93,7 @@ class Tab : public Component
         tab_selection.entries = {L"protected", L"change"};
         main_container.Add(&tab_selection);
 
-        container.Add(&pwd_in);
+        container.Add(&protected_dlg);
         container.Add(&text_component);
         main_container.Add(&container);
     }
@@ -79,6 +106,15 @@ class Tab : public Component
             container.Render() | flex,
         });
     }
+
+  private:
+    Toggle tab_selection{};
+
+    ChangePwdDlg text_component{};
+    ProtectedDlg protected_dlg{};
+
+    Container main_container{Container::Vertical()};
+    Container container{Container::Tab(&tab_selection.selected)};
 };
 
 int main(int ac, char* av[])
