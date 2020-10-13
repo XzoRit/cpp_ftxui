@@ -25,10 +25,12 @@ class PwdInput : public Component
         Add(&in);
 
         in.placeholder = L"input password";
-        in.on_change = [this] { raw = std::exchange(in.content, std::wstring(in.content.size(), L'*')); };
+        in.on_change = [this] { onChange(); };
+        in.on_enter = [this] { OnEnter(); };
     }
 
     std::wstring raw;
+    std::function<void()> on_enter = [] {};
 
     Element Render() override
     {
@@ -36,6 +38,16 @@ class PwdInput : public Component
     }
 
   private:
+    void onChange()
+    {
+        raw.push_back(in.content.back());
+        in.content.replace(in.content.size() - 1, 1, L"*");
+    }
+
+    void OnEnter()
+    {
+        on_enter();
+    }
     Input in;
 };
 
@@ -67,20 +79,24 @@ class ProtectedDlg : public Component
 {
   public:
     ProtectedDlg()
+        : raw_pwd{text(L"")}
     {
         Add(&container);
 
         container.Add(&pwd);
+
+        pwd.on_enter = [this] { raw_pwd = text(pwd.raw); };
     }
 
   private:
     Element Render() override
     {
-        return border(pwd.Render());
+        return border(vbox(pwd.Render(), raw_pwd));
     }
 
     Container container{Container::Vertical()};
-    PwdInput pwd;
+    PwdInput pwd{};
+    Element raw_pwd{};
 };
 
 class Tab : public Component
