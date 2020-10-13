@@ -41,6 +41,7 @@ class PwdInput : public Component
     void onChange()
     {
         raw.push_back(in.content.back());
+        raw.resize(in.content.size());
         in.content.replace(in.content.size() - 1, 1, L"*");
     }
 
