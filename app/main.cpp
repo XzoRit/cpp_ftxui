@@ -24,7 +24,6 @@ class PwdInput : public Component
     {
         Add(&in);
 
-        in.placeholder = L"input password";
         in.on_change = [this] { onChange(); };
         in.on_enter = [this] { OnEnter(); };
     }
@@ -34,7 +33,7 @@ class PwdInput : public Component
 
     Element Render() override
     {
-        return vbox({hbox({text(L" password: "), in.Render()})});
+        return in.Render();
     }
 
   private:
@@ -49,6 +48,7 @@ class PwdInput : public Component
     {
         on_enter();
     }
+
     Input in;
 };
 
@@ -67,7 +67,9 @@ class ChangePwdDlg : public Component
   private:
     Element Render() override
     {
-        return border(vbox(old_pwd.Render(), new_pwd.Render(), confirm_pwd.Render()));
+        return border(vbox(hbox(text(L"old password: "), old_pwd.Render()),
+                           hbox(text(L"new password: "), new_pwd.Render()),
+                           hbox(text(L"confirm password: "), confirm_pwd.Render())));
     }
 
     Container container{Container::Vertical()};
@@ -92,7 +94,7 @@ class ProtectedDlg : public Component
   private:
     Element Render() override
     {
-        return border(vbox(pwd.Render(), raw_pwd));
+        return border(vbox(hbox(text(L"enter password: "), pwd.Render()), hbox(text(L"clear text: "), raw_pwd)));
     }
 
     Container container{Container::Vertical()};
