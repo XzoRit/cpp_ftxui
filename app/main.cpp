@@ -28,11 +28,13 @@ class PwdInput : public Component
         in.on_enter = [this] { OnEnter(); };
     }
 
+    std::wstring placeholder;
     std::wstring raw;
     std::function<void()> on_enter = [] {};
 
     Element Render() override
     {
+        in.placeholder = placeholder;
         return in.Render();
     }
 
@@ -59,21 +61,24 @@ class ChangePwdDlg : public Component
     {
         Add(&container);
 
-        container.Add(&old_pwd);
+        container.Add(&current_pwd);
         container.Add(&new_pwd);
         container.Add(&confirm_pwd);
+
+        current_pwd.placeholder = L"current";
+        new_pwd.placeholder = L"new";
+        confirm_pwd.placeholder = L"confirm";
     }
 
   private:
     Element Render() override
     {
-        return border(vbox(hbox(text(L"old password: "), old_pwd.Render()),
-                           hbox(text(L"new password: "), new_pwd.Render()),
-                           hbox(text(L"confirm password: "), confirm_pwd.Render())));
+        return border(hbox(vbox(text(L"current password: "), text(L"new password: "), text(L"confirm password: ")),
+                           vbox(current_pwd.Render(), new_pwd.Render(), confirm_pwd.Render())));
     }
 
     Container container{Container::Vertical()};
-    PwdInput old_pwd;
+    PwdInput current_pwd;
     PwdInput new_pwd;
     PwdInput confirm_pwd;
 };
@@ -89,12 +94,13 @@ class ProtectedDlg : public Component
         container.Add(&pwd);
 
         pwd.on_enter = [this] { raw_pwd = text(pwd.raw); };
+        pwd.placeholder = L"password";
     }
 
   private:
     Element Render() override
     {
-        return border(vbox(hbox(text(L"enter password: "), pwd.Render()), hbox(text(L"clear text: "), raw_pwd)));
+        return border(hbox(vbox(text(L"enter password: "), text(L"clear text: ")), vbox(pwd.Render(), raw_pwd)));
     }
 
     Container container{Container::Vertical()};
@@ -122,7 +128,7 @@ class Tab : public Component
         return vbox({
             text(L"Application") | bold | hcenter,
             tab_selection.Render() | hcenter,
-            container.Render() | flex,
+            container.Render(),
         });
     }
 
@@ -150,6 +156,13 @@ int main(int ac, char* av[])
         if (vm.count("help"))
         {
             std::cout << desc << "\n";
+            return 0;
+        }
+        {
+            auto screen = ScreenInteractive::Fullscreen();
+
+            Tab tab{};
+            screen.Loop(&tab);
         }
     }
     catch (const std::exception& e)
@@ -160,13 +173,6 @@ int main(int ac, char* av[])
     catch (...)
     {
         std::cerr << "Exception of unknown type!\n";
-    }
-
-    {
-        auto screen = ScreenInteractive::Fullscreen();
-
-        Tab tab{};
-        screen.Loop(&tab);
     }
 
     return 0;
